@@ -1,0 +1,374 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+/*
+ * GROWTHEDUH design tokens.
+ * Change brand colours here — every component uses these variables.
+ * Accents (sand, bud, leaf) are sampled from the official logo.
+ */
+:root {
+  --brand: #2f6b4f;
+  --brand-dark: #214936;
+  --brand-soft: #eaf4ec;
+  --surface: #ffffff;
+  --canvas: #f8faf8;
+  --ink: #24332b;
+  --muted: #6b7a70;
+  --line: #dde7df;
+  --sand: #cdc093;
+  --sand-soft: #f6f2e6;
+  --bud: #f29d1e;
+  --leaf: #80cb32;
+  --danger: #b42318;
+}
+
+@theme inline {
+  --color-brand: var(--brand);
+  --color-brand-dark: var(--brand-dark);
+  --color-brand-soft: var(--brand-soft);
+  --color-surface: var(--surface);
+  --color-canvas: var(--canvas);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-sand: var(--sand);
+  --color-sand-soft: var(--sand-soft);
+  --color-bud: var(--bud);
+  --color-leaf: var(--leaf);
+  --color-danger: var(--danger);
+
+  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
+
+  --shadow-soft: 0 1px 2px rgb(36 51 43 / 0.04), 0 8px 24px -12px rgb(36 51 43 / 0.12);
+  --shadow-lift: 0 2px 4px rgb(36 51 43 / 0.05), 0 18px 40px -18px rgb(33 73 54 / 0.28);
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+
+body {
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--brand-soft);
+  color: var(--brand-dark);
+}
+
+:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+[id] {
+  scroll-margin-top: 6rem;
+}
+
+/* Reusable component utilities (Tailwind v4 @utility so they compose with variants). */
+@utility container-page {
+  @apply mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8;
+}
+
+@utility eyebrow {
+  @apply inline-flex items-center gap-2 text-xs font-semibold tracking-[0.18em] text-brand uppercase;
+  &::before {
+    content: "";
+    @apply h-px w-6 bg-sand;
+  }
+}
+
+@utility heading-display {
+  @apply font-display font-medium tracking-tight text-ink;
+  font-variation-settings: "SOFT" 50, "opsz" 72;
+}
+
+@utility card {
+  @apply rounded-2xl border border-line bg-surface shadow-soft;
+}
+
+@utility btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold transition duration-200 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-60;
+}
+@utility btn-primary {
+  @apply btn bg-brand text-white hover:bg-brand-dark;
+}
+@utility btn-outline {
+  @apply btn border border-brand/30 bg-surface text-brand-dark hover:border-brand hover:bg-brand-soft;
+}
+@utility btn-ghost {
+  @apply btn text-brand-dark hover:bg-brand-soft;
+}
+@utility btn-danger {
+  @apply btn border border-danger/30 bg-surface text-danger hover:bg-red-50;
+}
+
+@utility input {
+  @apply block w-full rounded-xl border border-line bg-surface px-3.5 py-2.5 text-sm text-ink transition-colors placeholder:text-muted/70 focus:border-brand focus:ring-2 focus:ring-brand/15 focus:outline-none;
+}
+@utility label {
+  @apply mb-1.5 block text-sm font-medium text-ink;
+}
+@utility hint {
+  @apply mt-1 text-xs text-muted;
+}
+
+/* =========================================================================
+ * Motion system
+ * Calm, slow, purposeful. Everything sits inside `prefers-reduced-motion:
+ * no-preference`, and scroll reveals only hide content once the observer
+ * script has started (html[data-motion]), so content is never stuck hidden.
+ * ========================================================================= */
+:root {
+  --ease-out-soft: cubic-bezier(0.22, 0.75, 0.2, 1);
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(26px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes word-rise {
+  from {
+    opacity: 0;
+    transform: translateY(0.55em) rotate(2deg);
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes arch-reveal {
+  from {
+    clip-path: inset(100% 0 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+@keyframes slow-zoom {
+  from {
+    transform: scale(1.14);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+@keyframes draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(var(--r, 0deg));
+  }
+  50% {
+    transform: translateY(-14px) rotate(calc(var(--r, 0deg) + 8deg));
+  }
+}
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+@keyframes ring {
+  0% {
+    transform: scale(1);
+    opacity: 0.45;
+  }
+  100% {
+    transform: scale(1.75);
+    opacity: 0;
+  }
+}
+@keyframes breathe {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.04);
+  }
+}
+@keyframes grow-x {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* ---- load-time entrance (hero, page headers) ---- */
+  .anim-rise {
+    animation: rise 0.9s var(--ease-out-soft) both;
+    animation-delay: var(--delay, 0ms);
+  }
+  .anim-fade {
+    animation: fade-in 1.2s ease both;
+    animation-delay: var(--delay, 0ms);
+  }
+  .word-rise {
+    display: inline-block;
+    animation: word-rise 0.9s var(--ease-out-soft) both;
+    animation-delay: calc(150ms + var(--i, 0) * 70ms);
+  }
+  .anim-arch {
+    animation: arch-reveal 1.3s var(--ease-out-soft) 0.25s both;
+  }
+  .anim-arch img {
+    animation: slow-zoom 2.4s var(--ease-out-soft) 0.25s both;
+  }
+  .anim-draw path {
+    stroke-dasharray: 1;
+    animation: draw 2s var(--ease-out-soft) 0.9s both;
+  }
+  .anim-float {
+    animation: float var(--dur, 7s) ease-in-out var(--delay, 0ms) infinite;
+  }
+  .anim-breathe {
+    animation: breathe 9s ease-in-out infinite;
+  }
+
+  /* ---- page-to-page fade (site template) ---- */
+  .page-in {
+    animation: fade-in 0.5s ease both;
+  }
+
+  /* ---- scroll reveal: single elements ---- */
+  html[data-motion] [data-reveal]:not([data-inview]) {
+    opacity: 0;
+  }
+  html[data-motion] [data-reveal][data-inview="true"] {
+    animation: rise 0.9s var(--ease-out-soft) backwards;
+    animation-delay: var(--delay, 0ms);
+  }
+
+  /* ---- scroll reveal: staggered children (grids/lists) ---- */
+  html[data-motion] [data-stagger]:not([data-inview]) > * {
+    opacity: 0;
+  }
+  html[data-motion] [data-stagger][data-inview="true"] > * {
+    animation: rise 0.85s var(--ease-out-soft) backwards;
+    animation-delay: calc(var(--n, 0) * 90ms);
+  }
+  [data-stagger] > :nth-child(2) { --n: 1; }
+  [data-stagger] > :nth-child(3) { --n: 2; }
+  [data-stagger] > :nth-child(4) { --n: 3; }
+  [data-stagger] > :nth-child(5) { --n: 4; }
+  [data-stagger] > :nth-child(6) { --n: 5; }
+  [data-stagger] > :nth-child(7) { --n: 6; }
+  [data-stagger] > :nth-child(8) { --n: 7; }
+  [data-stagger] > :nth-child(n + 9) { --n: 8; }
+
+  /* ---- marquee ---- */
+  .marquee-track {
+    animation: marquee var(--marquee-dur, 45s) linear infinite;
+  }
+  .marquee:hover .marquee-track {
+    animation-play-state: paused;
+  }
+
+  /* ---- WhatsApp pulse ---- */
+  .wa-pulse::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: inherit;
+    z-index: -1;
+    animation: ring 2.6s ease-out 2s infinite;
+  }
+
+  /* ---- smooth FAQ accordion (progressive enhancement) ---- */
+  @supports (interpolate-size: allow-keywords) {
+    .faq-item {
+      interpolate-size: allow-keywords;
+    }
+    .faq-item::details-content {
+      block-size: 0;
+      overflow: hidden;
+      transition:
+        block-size 0.4s var(--ease-out-soft),
+        content-visibility 0.4s allow-discrete;
+    }
+    .faq-item[open]::details-content {
+      block-size: auto;
+    }
+  }
+}
+
+/* Header gains depth once the page scrolls (attribute set by MotionObserver). */
+.site-header {
+  transition:
+    box-shadow 0.3s ease,
+    background-color 0.3s ease;
+}
+html[data-scrolled] .site-header {
+  box-shadow: 0 10px 30px -18px rgb(33 73 54 / 0.35);
+}
+
+/* Reading progress bar: CSS scroll-driven animation, hidden where unsupported. */
+.reading-progress {
+  display: none;
+}
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .reading-progress {
+      display: block;
+      position: fixed;
+      inset: 0 0 auto 0;
+      height: 3px;
+      z-index: 60;
+      background: linear-gradient(90deg, var(--leaf), var(--brand));
+      transform-origin: 0 50%;
+      animation: grow-x linear both;
+      animation-timeline: scroll(root);
+    }
+  }
+}
+
+/* Long-form article typography */
+@utility prose-growth {
+  @apply prose prose-lg max-w-none prose-headings:font-display prose-headings:font-medium prose-headings:text-ink prose-p:text-ink/85 prose-a:text-brand prose-a:underline-offset-4 prose-strong:text-ink prose-blockquote:border-l-sand prose-blockquote:font-normal prose-blockquote:text-ink/80 prose-li:marker:text-brand prose-img:rounded-2xl;
+}
