@@ -21,7 +21,7 @@ export const DEFAULT_SETTINGS: SiteSettings = {
     "Halo GROWTHEDUH, saya ingin bertanya mengenai layanan konsultasi psikologi. Boleh saya mendapatkan informasi lebih lanjut?",
   email: "growtheduh@gmail.com",
   instagram_url: "https://www.instagram.com/growtheduh",
-  tiktok_url: "https://www.tiktok.com/@growtheduh_offi",
+  tiktok_url: "https://www.tiktok.com/@growtheduh_official",
   linkedin_url: null,
   address: null,
   maps_url: null,

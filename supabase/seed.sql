@@ -19,7 +19,7 @@ insert into public.site_settings (
   'Halo GROWTHEDUH, saya ingin bertanya mengenai layanan konsultasi psikologi. Boleh saya mendapatkan informasi lebih lanjut?',
   'growtheduh@gmail.com',
   'https://www.instagram.com/growtheduh',
-  'https://www.tiktok.com/@growtheduh_offi',
+  'https://www.tiktok.com/@growtheduh_official',
   null, -- LinkedIn "Growtheduh": add the exact page URL in Admin > Pengaturan
   'Tempat Bertumbuh, Memahami Diri, dan Menemukan Solusi Bersama.',
   'GROWTHEDUH hadir sebagai platform pengembangan diri dan layanan psikologis yang membantu individu bertumbuh, memahami diri, serta menemukan solusi terbaik dalam menghadapi berbagai tantangan kehidupan.',

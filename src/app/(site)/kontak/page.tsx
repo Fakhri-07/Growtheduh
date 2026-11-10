@@ -6,7 +6,7 @@ import { ContactPanel } from "@/components/site/ContactPanel";
 import { FaqList } from "@/components/site/FaqList";
 import { EmergencyNotice } from "@/components/site/Notices";
 import { PageHeader } from "@/components/site/ui";
-import { getFaqs, getServices, getSiteSettings } from "@/lib/data/public";
+import { getFaqs, getSiteSettings } from "@/lib/data/public";
 
 export const metadata: Metadata = {
   title: "Kontak",
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 };
 
 export default async function ContactPage() {
-  const [settings, faqs, services] = await Promise.all([getSiteSettings(), getFaqs(), getServices()]);
+  const [settings, faqs] = await Promise.all([getSiteSettings(), getFaqs()]);
   return (
     <>
       <PageHeader
@@ -26,7 +26,7 @@ export default async function ContactPage() {
       />
       <section className="py-12 sm:py-16">
         <div className="container-page space-y-10">
-          <ContactPanel settings={settings} services={services.map((s) => s.title)} />
+          <ContactPanel settings={settings} />
           <ContactDetails settings={settings} />
           <EmergencyNotice text={settings.emergency_info} />
         </div>

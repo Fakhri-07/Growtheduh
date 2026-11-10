@@ -356,7 +356,7 @@ export default async function HomePage() {
               <h2 id="faq" className="heading-display mt-2 text-3xl">
                 Pertanyaan yang sering diajukan
               </h2>
-              <p className="mt-3 text-muted">Belum menemukan jawaban? Kirim pesan kepada kami di bawah ini.</p>
+              <p className="mt-3 text-muted">Belum menemukan jawaban? Hubungi admin kami melalui WhatsApp.</p>
             </div>
             <div className="lg:col-span-8">
               <FaqList faqs={faqs} />
@@ -368,7 +368,7 @@ export default async function HomePage() {
       {/* ============================================================= CONTACT */}
       <section className="pb-16 sm:pb-24" aria-labelledby="kontak">
         <div className="container-page space-y-8">
-          <ContactPanel settings={settings} services={services.map((s) => s.title)} />
+          <ContactPanel settings={settings} />
           <EmergencyNotice text={settings.emergency_info} />
         </div>
       </section>
