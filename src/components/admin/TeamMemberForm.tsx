@@ -51,11 +51,11 @@ export function TeamMemberForm({
         <TextArea name="short_bio" label="Bio singkat" defaultValue={member?.short_bio} rows={3} maxLength={400} className="sm:col-span-2" />
         <TextArea name="biography" label="Biografi" defaultValue={member?.biography} rows={8} className="sm:col-span-2" />
         <TextArea name="education" label="Pendidikan" defaultValue={member?.education} rows={4} hint={LINES_HINT} />
-        <TextArea name="experience" label="Pengalaman" defaultValue={member?.experience} rows={4} hint={LINES_HINT} />
+        <TextArea name="experience" label="Pengalaman profesional" defaultValue={member?.experience} rows={4} hint={LINES_HINT} />
         <TextArea name="specializations" label="Bidang keahlian" defaultValue={member?.specializations} rows={4} hint={LINES_HINT} />
         <TextArea
           name="qualifications"
-          label="Kualifikasi profesional"
+          label="Sertifikasi dan legalitas"
           defaultValue={member?.qualifications}
           rows={4}
           hint={`${LINES_HINT} Hanya yang sudah terverifikasi.`}

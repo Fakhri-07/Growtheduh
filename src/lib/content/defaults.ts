@@ -34,7 +34,9 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   brand_story: null,
   vision:
     "Membangun budaya peduli kesehatan mental melalui edukasi dan layanan psikologi yang inklusif dan berbasis ilmu.",
-  mission: null,
+  // Provided by GROWTHEDUH (one mission per line).
+  mission:
+    "Menyediakan konten edukasi psikologi melalui media digital yang akurat, mudah dipahami, dan relevan dengan kehidupan sehari-hari, yang bertujuan menjangkau berbagai kalangan masyarakat dan meningkatkan kesadaran tentang pentingnya kesehatan mental.\nMengangkat isu kesehatan mental dan menciptakan ruang diskusi yang aman yang sering dialami masyarakat agar lebih dipahami.\nMemberikan layanan profesional psikologi dengan berkolaborasi bersama psikolog, akademisi, organisasi serta komunitas yang responsif, aman, dan berorientasi pada kebutuhan anak, remaja, dewasa serta keluarga, untuk menyebarkan pengetahuan psikologi yang terpercaya.\nMendukung orang tua dalam memahami, menerima, dan mengoptimalkan potensi anak, baik anak dengan perkembangan tipikal maupun anak berkebutuhan khusus (ABK), melalui layanan deteksi dan pemantauan tumbuh kembang secara profesional.",
   values_text: null,
   footer_description:
     "Platform pengembangan diri dan layanan psikologis untuk membantu Anda bertumbuh, memahami diri, dan menemukan solusi bersama.",
@@ -52,10 +54,11 @@ export const DEFAULT_TEAM: TeamMember[] = [
     portrait_url: "/images/tri-wisda.jpg",
     short_bio: null,
     biography: null,
-    education: null,
-    experience: null,
-    specializations: null,
-    qualifications: null,
+    // Provided and confirmed by GROWTHEDUH (one item per line).
+    education: "S1 Psikologi – UIN Sunan Gunung Djati Bandung\nS2 Profesi Psikologi – Universitas Sumatera Utara",
+    experience: "Psychologist di Klinik Khalifa Medika\nAssociate Psychologist di Fiqih Pernikahan\nFounder dan Psychologist di GROWTHEDUH",
+    specializations: "Psikologi klinis anak\nTumbuh kembang anak\nPendampingan anak berkebutuhan khusus\nKonsultasi orang tua dan keluarga",
+    qualifications: "SILP: SILP-C6F23C2EEE73",
     linkedin_url: null,
     profile_url: null,
     is_featured: true,

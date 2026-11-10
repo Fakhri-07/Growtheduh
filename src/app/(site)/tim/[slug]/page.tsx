@@ -52,9 +52,9 @@ async function TeamMemberProfile({ params }: Pick<PageProps<"/tim/[slug]">, "par
 
   const sections = [
     { title: "Pendidikan", icon: GraduationCap, items: lines(member.education) },
-    { title: "Pengalaman", icon: Briefcase, items: lines(member.experience) },
     { title: "Bidang Keahlian", icon: Sparkles, items: lines(member.specializations) },
-    { title: "Kualifikasi Profesional", icon: Award, items: lines(member.qualifications) },
+    { title: "Pengalaman Profesional", icon: Briefcase, items: lines(member.experience) },
+    { title: "Sertifikasi dan Legalitas", icon: Award, items: lines(member.qualifications) },
   ].filter((s) => s.items.length > 0);
 
   const hasDetails = Boolean(member.biography || member.short_bio || sections.length);
@@ -121,7 +121,7 @@ async function TeamMemberProfile({ params }: Pick<PageProps<"/tim/[slug]">, "par
         <div className="container-page max-w-4xl space-y-10">
           {member.biography && (
             <div>
-              <h2 className="heading-display text-2xl">Biografi</h2>
+              <h2 className="heading-display text-2xl">Tentang Profesional</h2>
               <p className="mt-4 text-[17px] leading-relaxed whitespace-pre-line text-ink/85">{member.biography}</p>
             </div>
           )}

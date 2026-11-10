@@ -9,7 +9,7 @@
 insert into public.site_settings (
   id, brand_name, tagline, whatsapp_number, whatsapp_message, email,
   instagram_url, tiktok_url, linkedin_url,
-  hero_headline, hero_description, about_intro, vision,
+  hero_headline, hero_description, about_intro, vision, mission,
   footer_description, emergency_info
 ) values (
   1,
@@ -25,6 +25,7 @@ insert into public.site_settings (
   'GROWTHEDUH hadir sebagai platform pengembangan diri dan layanan psikologis yang membantu individu bertumbuh, memahami diri, serta menemukan solusi terbaik dalam menghadapi berbagai tantangan kehidupan.',
   'GROWTHEDUH hadir sebagai platform pengembangan diri dan layanan psikologis yang membantu individu bertumbuh, memahami diri, serta menemukan solusi terbaik dalam menghadapi berbagai tantangan kehidupan.',
   'Membangun budaya peduli kesehatan mental melalui edukasi dan layanan psikologi yang inklusif dan berbasis ilmu.',
+  E'Menyediakan konten edukasi psikologi melalui media digital yang akurat, mudah dipahami, dan relevan dengan kehidupan sehari-hari, yang bertujuan menjangkau berbagai kalangan masyarakat dan meningkatkan kesadaran tentang pentingnya kesehatan mental.\nMengangkat isu kesehatan mental dan menciptakan ruang diskusi yang aman yang sering dialami masyarakat agar lebih dipahami.\nMemberikan layanan profesional psikologi dengan berkolaborasi bersama psikolog, akademisi, organisasi serta komunitas yang responsif, aman, dan berorientasi pada kebutuhan anak, remaja, dewasa serta keluarga, untuk menyebarkan pengetahuan psikologi yang terpercaya.\nMendukung orang tua dalam memahami, menerima, dan mengoptimalkan potensi anak, baik anak dengan perkembangan tipikal maupun anak berkebutuhan khusus (ABK), melalui layanan deteksi dan pemantauan tumbuh kembang secara profesional.',
   'Platform pengembangan diri dan layanan psikologis untuk membantu Anda bertumbuh, memahami diri, dan menemukan solusi bersama.',
   'Jika Anda atau orang di sekitar Anda berada dalam kondisi darurat atau memiliki pikiran untuk menyakiti diri sendiri, segera hubungi layanan darurat 112, datangi IGD rumah sakit terdekat, atau hubungi layanan kesehatan jiwa resmi di wilayah Anda. Website ini bukan layanan krisis.'
 ) on conflict (id) do nothing;
@@ -32,8 +33,19 @@ insert into public.site_settings (
 -- Main professional profile. Portrait is served from /public until an admin
 -- uploads one to Supabase Storage. Professional title confirmed by GROWTHEDUH;
 -- biography/education/etc. left empty.
-insert into public.team_members (slug, full_name, professional_title, portrait_url, is_featured, is_published, sort_order)
-values ('tri-wisda', 'Tri Wisda, S.Psi., M.Psi.', 'Psikolog (Kekhususan Klinis Anak)', '/images/tri-wisda.jpg', true, true, 1)
+insert into public.team_members (
+  slug, full_name, professional_title, portrait_url,
+  education, experience, specializations, qualifications,
+  is_featured, is_published, sort_order
+)
+values (
+  'tri-wisda', 'Tri Wisda, S.Psi., M.Psi.', 'Psikolog (Kekhususan Klinis Anak)', '/images/tri-wisda.jpg',
+  E'S1 Psikologi – UIN Sunan Gunung Djati Bandung\nS2 Profesi Psikologi – Universitas Sumatera Utara',
+  E'Psychologist di Klinik Khalifa Medika\nAssociate Psychologist di Fiqih Pernikahan\nFounder dan Psychologist di GROWTHEDUH',
+  E'Psikologi klinis anak\nTumbuh kembang anak\nPendampingan anak berkebutuhan khusus\nKonsultasi orang tua dan keluarga',
+  E'SILP: SILP-C6F23C2EEE73',
+  true, true, 1
+)
 on conflict (slug) do nothing;
 
 insert into public.services (slug, title, summary, description, items, icon, whatsapp_message, sort_order) values

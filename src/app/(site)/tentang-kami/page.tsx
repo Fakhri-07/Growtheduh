@@ -55,28 +55,40 @@ export default async function AboutPage() {
                 <p className="mt-3 font-display text-2xl leading-snug">{settings.vision}</p>
               </div>
             )}
-            <div className="rounded-3xl border border-line bg-white p-8">
-              <p className="text-xs font-semibold tracking-[0.18em] text-brand uppercase">Misi</p>
-              {mission.length ? (
-                <ol className="mt-4 space-y-3">
-                  {mission.map((m, i) => (
-                    <li key={m} className="flex gap-3 text-ink/85">
-                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-soft text-xs font-semibold text-brand-dark">
-                        {i + 1}
-                      </span>
-                      <span className="leading-relaxed">{m}</span>
-                    </li>
-                  ))}
-                </ol>
-              ) : isDev ? (
-                <div className="mt-4">
-                  <Placeholder>[Placeholder] Misi belum diisi — lengkapi di Admin › Pengaturan.</Placeholder>
-                </div>
-              ) : (
-                <p className="mt-4 text-sm text-muted">Informasi misi akan segera diperbarui.</p>
-              )}
-            </div>
           </div>
+        </div>
+      </section>
+
+      {/* Misi: full-width numbered cards */}
+      <section className="pb-16 sm:pb-24" aria-labelledby="misi">
+        <div className="container-page">
+          <div data-reveal="" className="max-w-2xl">
+            <p className="eyebrow">Misi</p>
+            <h2 id="misi" className="heading-display mt-3 text-3xl sm:text-4xl">
+              Misi kami
+            </h2>
+          </div>
+          {mission.length ? (
+            <ol data-stagger="" className="mt-10 grid gap-5 md:grid-cols-2">
+              {mission.map((m, i) => (
+                <li
+                  key={m}
+                  className="card group flex gap-5 p-6 transition duration-300 hover:-translate-y-1 hover:shadow-lift sm:p-7"
+                >
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-leaf to-brand font-display text-lg text-white transition duration-300 group-hover:scale-110">
+                    {i + 1}
+                  </span>
+                  <span className="leading-relaxed text-ink/85">{m}</span>
+                </li>
+              ))}
+            </ol>
+          ) : isDev ? (
+            <div className="mt-6">
+              <Placeholder>[Placeholder] Misi belum diisi — lengkapi di Admin › Pengaturan.</Placeholder>
+            </div>
+          ) : (
+            <p className="mt-6 text-sm text-muted">Informasi misi akan segera diperbarui.</p>
+          )}
         </div>
       </section>
 
