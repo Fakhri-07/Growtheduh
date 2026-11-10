@@ -30,6 +30,10 @@ const nextConfig: NextConfig = {
       : [],
   },
   experimental: {
+    // The persisted dev cache (.next/dev/cache) caused an endless
+    // "HMR hash mismatch" reload loop after restarting `next dev` on Windows.
+    // Dev-only; production builds are unaffected.
+    turbopackFileSystemCacheForDev: false,
     serverActions: {
       // Admin image uploads (max 4 MB per file, validated server-side).
       bodySizeLimit: "5mb",
