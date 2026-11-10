@@ -15,22 +15,22 @@ export async function Sidebar() {
   return (
     <aside className="sticky top-4 hidden h-[calc(100dvh-2rem)] w-72 shrink-0 flex-col overflow-hidden rounded-[2rem] border border-line bg-white shadow-soft lg:flex">
       <ContourPattern />
-      <div className="relative flex min-h-0 flex-1 flex-col overflow-y-auto px-5 pt-7 pb-6">
-        <div className="px-2">
-          <Logo logoUrl={settings.logo_url} brandName={settings.brand_name} height={64} priority />
-          <p className="mt-2 text-xs font-medium tracking-wide text-muted">Psikologi &amp; Pengembangan Diri</p>
+      <div className="relative flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain px-5 pt-7 pb-6 [scrollbar-width:thin] [@media(max-height:820px)]:pt-5 [@media(max-height:820px)]:pb-4">
+        <div className="shrink-0 px-2">
+          <Logo logoUrl={settings.logo_url} brandName={settings.brand_name} height={64} priority className="[@media(max-height:820px)]:[&_img]:!h-12" />
+          <p className="mt-2 text-xs font-medium tracking-wide text-muted [@media(max-height:820px)]:hidden">Psikologi &amp; Pengembangan Diri</p>
         </div>
 
-        <nav aria-label="Navigasi utama" className="mt-8">
+        <nav aria-label="Navigasi utama" className="mt-8 shrink-0 [@media(max-height:820px)]:mt-5">
           <Suspense fallback={<SidebarNavList pathname={null} />}>
             <SidebarNav />
           </Suspense>
         </nav>
 
-        <div className="relative mt-8 overflow-hidden rounded-3xl bg-gradient-to-br from-brand via-brand to-brand-dark p-5 text-white shadow-lift">
+        <div className="relative mt-8 shrink-0 overflow-hidden rounded-3xl bg-gradient-to-br from-brand via-brand to-brand-dark p-5 text-white shadow-lift [@media(max-height:820px)]:mt-5 [@media(max-height:820px)]:p-4">
           <div aria-hidden className="anim-breathe absolute -top-10 -right-10 h-28 w-28 rounded-full bg-leaf/30 blur-2xl" />
           <p className="relative font-display text-lg leading-snug">Siap untuk bertumbuh?</p>
-          <p className="relative mt-1.5 text-sm leading-relaxed text-white/75">
+          <p className="relative mt-1.5 text-sm leading-relaxed text-white/75 [@media(max-height:700px)]:hidden">
             Ceritakan kebutuhan Anda, admin kami siap membantu.
           </p>
           {waUrl ? (
@@ -50,7 +50,7 @@ export async function Sidebar() {
           )}
         </div>
 
-        <div className="mt-auto pt-8">
+        <div className="mt-auto shrink-0 pt-8 [@media(max-height:820px)]:pt-5">
           <p className="px-2 text-[11px] font-semibold tracking-[0.18em] text-muted uppercase">Ikuti Kami</p>
           <SocialLinks settings={settings} className="mt-3 px-1" />
         </div>

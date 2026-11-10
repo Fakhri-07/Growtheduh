@@ -23,7 +23,7 @@ export function SidebarNavList({ pathname }: { pathname: string | null }) {
               href={link.href}
               aria-current={active ? "page" : undefined}
               className={cn(
-                "group relative flex items-center gap-3.5 rounded-2xl px-4 py-3 text-[15px] font-medium transition duration-200",
+                "group relative flex items-center gap-3.5 rounded-2xl px-4 py-3 text-[15px] font-medium transition duration-200 [@media(max-height:820px)]:py-2.5 [@media(max-height:700px)]:py-2",
                 active
                   ? "bg-gradient-to-r from-brand-soft to-white text-brand-dark shadow-soft ring-1 ring-brand/10"
                   : "text-ink/65 hover:bg-canvas hover:text-ink",
