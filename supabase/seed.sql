@@ -30,9 +30,10 @@ insert into public.site_settings (
 ) on conflict (id) do nothing;
 
 -- Main professional profile. Portrait is served from /public until an admin
--- uploads one to Supabase Storage. Biography/education/etc. left empty.
-insert into public.team_members (slug, full_name, portrait_url, is_featured, is_published, sort_order)
-values ('tri-wisda', 'Tri Wisda, S.Psi., M.Psi.', '/images/tri-wisda.jpg', true, true, 1)
+-- uploads one to Supabase Storage. Professional title confirmed by GROWTHEDUH;
+-- biography/education/etc. left empty.
+insert into public.team_members (slug, full_name, professional_title, portrait_url, is_featured, is_published, sort_order)
+values ('tri-wisda', 'Tri Wisda, S.Psi., M.Psi.', 'Psikolog (Kekhususan Klinis Anak)', '/images/tri-wisda.jpg', true, true, 1)
 on conflict (slug) do nothing;
 
 insert into public.services (slug, title, summary, description, items, icon, whatsapp_message, sort_order) values

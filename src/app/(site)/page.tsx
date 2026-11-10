@@ -28,10 +28,10 @@ import { getSiteUrl } from "@/lib/env";
 /** Who the services are for (from the GROWTHEDUH booklet) — shown instead of client logos. */
 const AUDIENCES = ["Anak & ABK", "Remaja", "Dewasa", "Pasangan & Keluarga", "Sekolah & Organisasi"];
 
-/** Splits a name like "Tri Wisda, S.Psi., M.Psi." into name and credentials. */
-function splitName(fullName: string) {
-  const [name, ...rest] = fullName.split(",");
-  return { name: name.trim(), credentials: rest.join(",").trim() };
+/** "GROWTHEDUH" -> ["GROWTH", "EDUH"] for the two-tone wordmark. */
+function splitBrand(brand: string): string[] {
+  const upper = brand.toUpperCase();
+  return upper.startsWith("GROWTH") && upper.length > 6 ? [brand.slice(0, 6), brand.slice(6)] : [brand];
 }
 
 function css(vars: Record<string, string | number>) {
@@ -50,8 +50,7 @@ export default async function HomePage() {
     getTeamMembers(),
   ]);
   const siteUrl = getSiteUrl();
-  const person = profile ? splitName(profile.full_name) : null;
-  const [firstName, ...lastNames] = (person?.name ?? settings.brand_name).split(" ");
+  const brandParts = splitBrand(settings.brand_name);
 
   const highlights: Highlight[] = [
     { icon: "services", value: `${services.length}`, label: "Layanan Psikologi" },
@@ -98,29 +97,24 @@ export default async function HomePage() {
 
         <div className="container-page relative grid items-center gap-14 py-14 sm:py-16 lg:grid-cols-12 lg:gap-6 lg:py-20">
           <div className="lg:col-span-7">
-            <p className="anim-rise text-xs font-semibold tracking-[0.22em] text-brand uppercase">
-              Halo, selamat datang di {settings.brand_name}
-            </p>
+            <p className="anim-rise text-xs font-semibold tracking-[0.22em] text-brand uppercase">Halo, selamat datang di</p>
 
-            {person && (
-              <p className="mt-4 font-display text-5xl leading-[1.05] font-medium tracking-tight text-ink sm:text-6xl xl:text-7xl">
-                {[firstName, ...lastNames].map((word, i) => (
-                  <span key={`${word}-${i}`}>
-                    <span
-                      className={`word-rise ${i > 0 ? "bg-gradient-to-r from-brand to-leaf bg-clip-text text-transparent" : ""}`}
-                      style={css({ "--i": i })}
-                    >
-                      {word}
-                    </span>{" "}
-                  </span>
-                ))}
-                {person.credentials && (
-                  <span className="anim-rise mt-2 block font-sans text-base font-medium tracking-normal text-muted sm:text-lg" style={css({ "--delay": "350ms" })}>
-                    {person.credentials}
-                  </span>
-                )}
-              </p>
-            )}
+            {/* Brand wordmark: "GROWTH" in deep green, "EDUH" in the leaf gradient (echoes the logo). */}
+            <p
+              aria-label={settings.brand_name}
+              className="mt-4 font-display text-[2.6rem] leading-[1.05] font-semibold tracking-tight text-ink uppercase sm:text-6xl xl:text-[4.4rem]"
+            >
+              {brandParts.map((part, i) => (
+                <span
+                  key={part}
+                  aria-hidden
+                  className={`word-rise ${i > 0 ? "bg-gradient-to-r from-brand to-leaf bg-clip-text text-transparent" : "text-brand-dark"}`}
+                  style={css({ "--i": i })}
+                >
+                  {part}
+                </span>
+              ))}
+            </p>
 
             <h1
               className="anim-rise mt-6 max-w-xl font-display text-2xl leading-snug text-ink/90 sm:text-3xl"
@@ -183,9 +177,12 @@ export default async function HomePage() {
 
             <div className="absolute -bottom-4 -left-2 sm:left-0">
               <div className="anim-rise" style={css({ "--delay": "1300ms" })}>
-                <div className="anim-float rounded-2xl border border-line bg-white/95 px-4 py-3 shadow-lift backdrop-blur" style={css({ "--dur": "8s" })}>
-                  <p className="font-display text-sm font-medium text-ink">{profile?.full_name ?? settings.brand_name}</p>
-                  <p className="text-xs text-brand">{profile?.professional_title || settings.brand_name}</p>
+                <div className="anim-float max-w-[17rem] rounded-2xl border border-line bg-white/95 px-4 py-3 shadow-lift backdrop-blur" style={css({ "--dur": "8s" })}>
+                  <p className="font-display text-sm leading-snug font-medium text-ink">
+                    {profile?.full_name ?? settings.brand_name}
+                    {profile?.professional_title ? "," : ""}
+                  </p>
+                  <p className="mt-0.5 text-xs leading-snug text-brand">{profile?.professional_title || settings.brand_name}</p>
                 </div>
               </div>
             </div>

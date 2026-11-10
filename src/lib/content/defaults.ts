@@ -47,7 +47,8 @@ export const DEFAULT_TEAM: TeamMember[] = [
     id: "default-tri-wisda",
     slug: "tri-wisda",
     full_name: "Tri Wisda, S.Psi., M.Psi.",
-    professional_title: null,
+    // Confirmed by GROWTHEDUH.
+    professional_title: "Psikolog (Kekhususan Klinis Anak)",
     portrait_url: "/images/tri-wisda.jpg",
     short_bio: null,
     biography: null,
