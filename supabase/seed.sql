@@ -15,7 +15,7 @@ insert into public.site_settings (
   1,
   'GROWTHEDUH',
   'Tempat Bertumbuh, Memahami Diri, dan Menemukan Solusi Bersama.',
-  '085111351501', -- from brand booklet: VERIFY before production
+  '089524141255', -- consultation number confirmed by GROWTHEDUH
   'Halo GROWTHEDUH, saya ingin bertanya mengenai layanan konsultasi psikologi. Boleh saya mendapatkan informasi lebih lanjut?',
   'growtheduh@gmail.com',
   'https://www.instagram.com/growtheduh',

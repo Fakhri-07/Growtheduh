@@ -15,8 +15,8 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   brand_name: "GROWTHEDUH",
   tagline: "Tempat Bertumbuh, Memahami Diri, dan Menemukan Solusi Bersama.",
   logo_url: null,
-  // Initial number from the brand booklet — verify before production.
-  whatsapp_number: "085111351501",
+  // Consultation WhatsApp number confirmed by GROWTHEDUH.
+  whatsapp_number: "089524141255",
   whatsapp_message:
     "Halo GROWTHEDUH, saya ingin bertanya mengenai layanan konsultasi psikologi. Boleh saya mendapatkan informasi lebih lanjut?",
   email: "growtheduh@gmail.com",

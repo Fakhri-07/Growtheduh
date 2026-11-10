@@ -35,7 +35,7 @@ export default async function SettingsPage() {
             name="whatsapp_number"
             label="Nomor WhatsApp admin"
             defaultValue={s.whatsapp_number}
-            placeholder="085111351501"
+            placeholder="0895xxxxxxxx"
             hint="Format 08xx atau 628xx. Pastikan nomor sudah diverifikasi sebelum produksi."
           />
           <TextField name="email" label="Email" type="email" defaultValue={s.email} />
