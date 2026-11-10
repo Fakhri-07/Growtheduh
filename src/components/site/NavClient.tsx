@@ -5,36 +5,12 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { WhatsAppIcon } from "@/components/icons/BrandIcons";
+import { SiteIcon } from "@/components/icons/SiteIcon";
 import { NAV_LINKS } from "@/components/site/navigation";
 import { cn } from "@/lib/utils";
 
 function isActive(pathname: string, href: string) {
   return href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`);
-}
-
-export function NavLinks() {
-  const pathname = usePathname();
-  return (
-    <ul className="flex items-center gap-1">
-      {NAV_LINKS.map((link) => {
-        const active = isActive(pathname, link.href);
-        return (
-          <li key={link.href}>
-            <Link
-              href={link.href}
-              aria-current={active ? "page" : undefined}
-              className={cn(
-                "rounded-full px-3 py-2 text-sm font-medium transition-colors",
-                active ? "bg-brand-soft text-brand-dark" : "text-ink/75 hover:bg-canvas hover:text-ink",
-              )}
-            >
-              {link.label}
-            </Link>
-          </li>
-        );
-      })}
-    </ul>
-  );
 }
 
 export function MobileNav({ waUrl }: { waUrl: string | null }) {
@@ -94,10 +70,11 @@ export function MobileNav({ waUrl }: { waUrl: string | null }) {
                       href={link.href}
                       aria-current={active ? "page" : undefined}
                       className={cn(
-                        "block rounded-xl px-4 py-3.5 text-base font-medium",
+                        "flex items-center gap-3 rounded-xl px-4 py-3.5 text-base font-medium",
                         active ? "bg-brand-soft text-brand-dark" : "text-ink hover:bg-canvas",
                       )}
                     >
+                      <SiteIcon name={link.icon} size={20} className={active ? "text-brand" : "text-ink/45"} />
                       {link.label}
                     </Link>
                   </li>

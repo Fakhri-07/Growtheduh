@@ -9,22 +9,26 @@ import { cn, formatDate, readingMinutes } from "@/lib/utils";
 
 export function ServiceCard({ service, waUrl }: { service: Service; waUrl?: string | null }) {
   return (
-    <article className="card group relative flex h-full flex-col p-6 transition duration-300 hover:-translate-y-1.5 hover:border-brand/25 hover:shadow-lift sm:p-7">
-      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-soft text-brand transition duration-300 group-hover:-rotate-6 group-hover:bg-brand group-hover:text-white">
-        <ServiceIcon name={service.icon} />
+    <article className="card group relative flex h-full flex-col items-center overflow-hidden p-7 text-center transition duration-300 hover:-translate-y-1.5 hover:border-brand/25 hover:shadow-lift">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -top-16 left-1/2 h-32 w-32 -translate-x-1/2 rounded-full bg-brand-soft opacity-0 blur-2xl transition duration-500 group-hover:opacity-100"
+      />
+      <div className="relative flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-leaf to-brand text-white shadow-[0_10px_24px_-10px_rgb(47_107_79/0.7)] ring-8 ring-brand-soft transition duration-300 group-hover:scale-110 group-hover:-rotate-6">
+        <ServiceIcon name={service.icon} size={26} />
       </div>
-      <h3 className="mt-5 font-display text-xl leading-snug font-medium text-ink">
+      <h3 className="relative mt-6 font-display text-xl leading-snug font-medium text-ink">
         <Link href={`/layanan/${service.slug}`} className="after:absolute after:inset-0 focus:outline-none">
           {service.title}
         </Link>
       </h3>
-      <p className="mt-3 flex-1 text-sm leading-relaxed text-muted">{service.summary}</p>
-      <div className="relative z-10 mt-6 flex flex-wrap items-center gap-3">
+      <p className="mt-3 line-clamp-3 flex-1 text-sm leading-relaxed text-muted">{service.summary}</p>
+      <div className="relative z-10 mt-6 flex flex-wrap items-center justify-center gap-3">
         <Link
           href={`/layanan/${service.slug}`}
           className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand hover:text-brand-dark"
         >
-          Lihat detail <ArrowRight size={16} aria-hidden className="transition-transform group-hover:translate-x-0.5" />
+          Selengkapnya <ArrowRight size={16} aria-hidden className="transition-transform group-hover:translate-x-0.5" />
         </Link>
         {waUrl !== undefined && <WhatsAppButton href={waUrl} label="Tanya via WhatsApp" variant="outline" size="sm" />}
       </div>
@@ -36,7 +40,7 @@ export function ArticleCard({ article, priority }: { article: Article; priority?
   const category = article.categories[0];
   return (
     <article className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-white shadow-soft transition duration-300 hover:-translate-y-1.5 hover:shadow-lift">
-      <div className="relative aspect-[16/10] overflow-hidden bg-brand-soft">
+      <div className="relative m-3 mb-0 aspect-[16/10] overflow-hidden rounded-xl bg-brand-soft">
         {article.featured_image_url ? (
           <SmartImage
             src={article.featured_image_url}
@@ -53,7 +57,7 @@ export function ArticleCard({ article, priority }: { article: Article; priority?
       <div className="flex flex-1 flex-col p-6">
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted">
           {category && (
-            <span className="rounded-full bg-brand-soft px-2.5 py-1 font-semibold text-brand-dark">{category.name}</span>
+            <span className="rounded-md border border-brand/20 bg-brand-soft/70 px-2 py-0.5 text-[11px] font-semibold tracking-wide text-brand-dark uppercase">{category.name}</span>
           )}
           <time dateTime={article.published_at ?? undefined}>{formatDate(article.published_at)}</time>
           <span className="inline-flex items-center gap-1">

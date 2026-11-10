@@ -1,15 +1,18 @@
 import Link from "next/link";
-import { ArrowRight, BookOpen, MessageSquareQuote, PenLine, Sprout } from "lucide-react";
-import { APPROACH } from "@/lib/content/approach";
+import { ArrowRight, BookOpen, MessageSquareQuote, PenLine } from "lucide-react";
+import { SiteIcon } from "@/components/icons/SiteIcon";
 import { ArticleCard, ServiceCard, TeamCard, TestimonialCard } from "@/components/site/cards";
-import { ContactCta, ContactDetails } from "@/components/site/ContactSection";
+import { APPROACH } from "@/lib/content/approach";
+import { Carousel } from "@/components/site/Carousel";
+import { ContactPanel } from "@/components/site/ContactPanel";
 import { FaqList } from "@/components/site/FaqList";
+import { HighlightsBand, type Highlight } from "@/components/site/HighlightsBand";
 import { JsonLd } from "@/components/site/JsonLd";
 import { EmergencyNotice } from "@/components/site/Notices";
+import { ServiceMarquee } from "@/components/site/ServiceMarquee";
 import { SmartImage } from "@/components/site/SmartImage";
 import { StarRating } from "@/components/site/StarRating";
-import { ServiceMarquee } from "@/components/site/ServiceMarquee";
-import { EmptyState, LeafAccent, SectionHeading } from "@/components/site/ui";
+import { EmptyState, LeafAccent } from "@/components/site/ui";
 import {
   getFaqs,
   getFeaturedProfile,
@@ -21,21 +24,43 @@ import {
   getTestimonialStats,
 } from "@/lib/data/public";
 import { getSiteUrl } from "@/lib/env";
-import { buildWhatsAppUrl } from "@/lib/whatsapp";
+
+/** Who the services are for (from the GROWTHEDUH booklet) — shown instead of client logos. */
+const AUDIENCES = ["Anak & ABK", "Remaja", "Dewasa", "Pasangan & Keluarga", "Sekolah & Organisasi"];
+
+/** Splits a name like "Tri Wisda, S.Psi., M.Psi." into name and credentials. */
+function splitName(fullName: string) {
+  const [name, ...rest] = fullName.split(",");
+  return { name: name.trim(), credentials: rest.join(",").trim() };
+}
+
+function css(vars: Record<string, string | number>) {
+  return vars as React.CSSProperties;
+}
 
 export default async function HomePage() {
-  const [settings, profile, services, team, articles, testimonials, stats, faqs] = await Promise.all([
+  const [settings, profile, services, articles, testimonials, stats, faqs, team] = await Promise.all([
     getSiteSettings(),
     getFeaturedProfile(),
     getServices(),
-    getTeamMembers(),
-    getLatestArticles(3),
-    getLatestTestimonials(3),
+    getLatestArticles(4),
+    getLatestTestimonials(6),
     getTestimonialStats(),
     getFaqs(),
+    getTeamMembers(),
   ]);
-  const waUrl = buildWhatsAppUrl(settings.whatsapp_number, settings.whatsapp_message);
   const siteUrl = getSiteUrl();
+  const person = profile ? splitName(profile.full_name) : null;
+  const [firstName, ...lastNames] = (person?.name ?? settings.brand_name).split(" ");
+
+  const highlights: Highlight[] = [
+    { icon: "services", value: `${services.length}`, label: "Layanan Psikologi" },
+    { icon: "format", value: "Online & Offline", label: "Format Sesi Fleksibel" },
+    { icon: "ages", value: "Anak – Dewasa", label: "Pendampingan Lintas Usia" },
+    stats.count > 0
+      ? { icon: "rating", value: `${stats.average.toFixed(1)} / 5`, label: `Dari ${stats.count} ulasan klien` }
+      : { icon: "privacy", value: "Konfidensial", label: "Privasi Klien Terjaga" },
+  ];
 
   return (
     <>
@@ -65,223 +90,188 @@ export default async function HomePage() {
         }}
       />
 
-      {/* ------------------------------------------------------------ Hero */}
+      {/* ================================================================ HERO */}
       <section className="relative overflow-hidden bg-white">
-        <div
-          aria-hidden
-          className="anim-fade pointer-events-none absolute inset-y-0 right-0 hidden w-[46%] rounded-bl-[120px] bg-brand-soft lg:block"
-        />
-        <div
-          aria-hidden
-          className="anim-breathe pointer-events-none absolute -top-32 -left-32 h-80 w-80 rounded-full bg-brand-soft/60 blur-3xl"
-        />
-        <LeafAccent className="absolute top-16 left-[46%] hidden text-leaf/60 lg:block" size={30} rotate={-20} />
-        <LeafAccent className="absolute bottom-20 left-[6%] hidden text-brand/20 md:block" size={44} rotate={30} delay={1500} duration={9000} />
-        <LeafAccent className="absolute top-24 right-[4%] hidden text-bud/50 lg:block" size={22} rotate={10} delay={800} />
+        <div aria-hidden className="anim-breathe pointer-events-none absolute -top-32 -left-32 h-80 w-80 rounded-full bg-brand-soft/70 blur-3xl" />
+        <LeafAccent className="absolute top-14 left-[44%] hidden text-leaf/60 lg:block" size={28} rotate={-20} />
+        <LeafAccent className="absolute bottom-16 left-[4%] hidden text-brand/15 md:block" size={44} rotate={30} delay={1500} duration={9000} />
 
-        <div className="container-page relative grid items-center gap-12 py-14 sm:py-20 lg:grid-cols-12 lg:gap-8 lg:py-24">
-          <div className="lg:col-span-7 lg:pr-8">
-            <p className="eyebrow anim-rise">Layanan Psikologi &amp; Pengembangan Diri</p>
-            <h1 className="heading-display mt-5 text-4xl leading-[1.1] sm:text-5xl lg:text-[3.6rem]">
-              {(settings.hero_headline ?? "").split(/\s+/).map((word, i, all) => (
-                <span key={`${word}-${i}`}>
-                  <span className="word-rise" style={{ "--i": i } as React.CSSProperties}>
-                    {word}
+        <div className="container-page relative grid items-center gap-14 py-14 sm:py-16 lg:grid-cols-12 lg:gap-6 lg:py-20">
+          <div className="lg:col-span-7">
+            <p className="anim-rise text-xs font-semibold tracking-[0.22em] text-brand uppercase">
+              Halo, selamat datang di {settings.brand_name}
+            </p>
+
+            {person && (
+              <p className="mt-4 font-display text-5xl leading-[1.05] font-medium tracking-tight text-ink sm:text-6xl xl:text-7xl">
+                {[firstName, ...lastNames].map((word, i) => (
+                  <span key={`${word}-${i}`}>
+                    <span
+                      className={`word-rise ${i > 0 ? "bg-gradient-to-r from-brand to-leaf bg-clip-text text-transparent" : ""}`}
+                      style={css({ "--i": i })}
+                    >
+                      {word}
+                    </span>{" "}
                   </span>
-                  {i < all.length - 1 ? " " : ""}
-                </span>
-              ))}
+                ))}
+                {person.credentials && (
+                  <span className="anim-rise mt-2 block font-sans text-base font-medium tracking-normal text-muted sm:text-lg" style={css({ "--delay": "350ms" })}>
+                    {person.credentials}
+                  </span>
+                )}
+              </p>
+            )}
+
+            <h1
+              className="anim-rise mt-6 max-w-xl font-display text-2xl leading-snug text-ink/90 sm:text-3xl"
+              style={css({ "--delay": "500ms" })}
+            >
+              {settings.hero_headline}
             </h1>
             {settings.hero_description && (
-              <p
-                className="anim-rise mt-6 max-w-xl text-lg leading-relaxed text-muted"
-                style={{ "--delay": "750ms" } as React.CSSProperties}
-              >
+              <p className="anim-rise mt-5 max-w-xl leading-relaxed text-muted" style={css({ "--delay": "650ms" })}>
                 {settings.hero_description}
               </p>
             )}
-            <div className="anim-rise mt-9 flex flex-wrap gap-3" style={{ "--delay": "900ms" } as React.CSSProperties}>
-              <Link href="/layanan" className="btn-primary group px-6 py-3.5 text-base shadow-lift">
-                Kenali Layanan Kami{" "}
+
+            <div className="anim-rise mt-8 flex flex-wrap items-center gap-4" style={css({ "--delay": "800ms" })}>
+              <Link href="/layanan" className="btn-primary group bg-gradient-to-r from-brand to-brand-dark px-6 py-3.5 text-base shadow-lift">
+                Kenali Layanan Kami
                 <ArrowRight size={18} aria-hidden className="transition-transform group-hover:translate-x-1" />
               </Link>
-              <Link href="/kontak" className="btn-outline px-6 py-3.5 text-base">
+              <Link href="/kontak" className="group inline-flex items-center gap-3 text-sm font-semibold text-ink">
+                <span className="flex h-12 w-12 items-center justify-center rounded-full border border-line bg-white text-brand shadow-soft transition group-hover:border-brand group-hover:bg-brand group-hover:text-white">
+                  <SiteIcon name="contact" size={18} />
+                </span>
                 Hubungi Kami
               </Link>
             </div>
-            <ul className="mt-10 flex flex-wrap gap-x-6 gap-y-3 text-sm text-ink/70">
-              {["Online & offline", "Pendekatan empatik", "Kerahasiaan terjaga"].map((t, i) => (
-                <li
-                  key={t}
-                  className="anim-rise flex items-center gap-2"
-                  style={{ "--delay": `${1050 + i * 100}ms` } as React.CSSProperties}
-                >
-                  <Sprout size={16} className="text-brand" aria-hidden /> {t}
-                </li>
-              ))}
-            </ul>
+
+            <div className="anim-rise mt-10" style={css({ "--delay": "950ms" })}>
+              <p className="text-xs font-medium text-muted">Pendampingan untuk</p>
+              <ul className="mt-3 flex flex-wrap gap-x-5 gap-y-2">
+                {AUDIENCES.map((a) => (
+                  <li key={a} className="flex items-center gap-1.5 text-sm font-semibold text-ink/55">
+                    <SiteIcon name="check" size={16} className="text-brand/70" /> {a}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
 
-          <div className="relative mx-auto w-full max-w-sm lg:col-span-5 lg:max-w-none">
-            <div className="anim-arch relative aspect-[4/5] overflow-hidden rounded-t-[999px] rounded-b-[2rem] border-8 border-white bg-brand-soft shadow-lift">
-              {profile?.portrait_url ? (
+          {/* Portrait with glow, orbit and floating cards */}
+          <div className="relative mx-auto w-full max-w-[22rem] lg:col-span-5 lg:max-w-none">
+            <div aria-hidden className="anim-fade absolute top-1/2 left-1/2 aspect-square w-[115%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,var(--brand-soft)_0%,rgb(234_244_236/0.5)_45%,transparent_70%)]" />
+            <svg aria-hidden viewBox="0 0 200 200" className="orbit pointer-events-none absolute top-1/2 left-1/2 w-[108%] -translate-x-1/2 -translate-y-1/2 text-brand/25">
+              <circle cx="100" cy="100" r="96" fill="none" stroke="currentColor" strokeWidth="0.6" strokeDasharray="2 5" />
+              <circle cx="100" cy="4" r="2.6" className="fill-leaf" />
+              <circle cx="196" cy="100" r="2" className="fill-bud" />
+            </svg>
+
+            <div className="anim-arch relative mx-auto aspect-[4/5] w-[86%] overflow-hidden rounded-t-[999px] rounded-b-[2.5rem] border-[6px] border-white bg-brand-soft shadow-lift">
+              {profile?.portrait_url && (
                 <SmartImage
                   src={profile.portrait_url}
                   alt={`Foto ${profile.full_name}`}
                   fill
                   priority
-                  sizes="(min-width: 1024px) 40vw, 90vw"
+                  sizes="(min-width: 1024px) 34vw, 80vw"
                   className="object-cover object-top"
                 />
-              ) : null}
+              )}
             </div>
-            {profile && (
-              <div className="absolute -bottom-6 left-1/2 z-10 w-[85%] -translate-x-1/2">
-                <div
-                  className="anim-rise rounded-2xl border border-line bg-white/95 px-5 py-4 text-center shadow-soft backdrop-blur"
-                  style={{ "--delay": "1300ms" } as React.CSSProperties}
-                >
-                  <p className="font-display text-lg font-medium text-ink">{profile.full_name}</p>
-                  <p className="text-sm text-brand">{profile.professional_title || settings.brand_name}</p>
+
+            <div className="absolute -bottom-4 -left-2 sm:left-0">
+              <div className="anim-rise" style={css({ "--delay": "1300ms" })}>
+                <div className="anim-float rounded-2xl border border-line bg-white/95 px-4 py-3 shadow-lift backdrop-blur" style={css({ "--dur": "8s" })}>
+                  <p className="font-display text-sm font-medium text-ink">{profile?.full_name ?? settings.brand_name}</p>
+                  <p className="text-xs text-brand">{profile?.professional_title || settings.brand_name}</p>
                 </div>
               </div>
-            )}
-            <svg
-              aria-hidden
-              viewBox="0 0 400 120"
-              className="anim-draw pointer-events-none absolute -bottom-16 -left-10 w-[115%] text-sand/70"
-              fill="none"
-            >
-              <path
-                d="M10 70 C 120 120, 260 120, 390 40"
-                pathLength={1}
-                stroke="currentColor"
-                strokeWidth="10"
-                strokeLinecap="round"
-              />
-            </svg>
-          </div>
-        </div>
-      </section>
-
-      {/* ---------------------------------------------------- Service ribbon */}
-      {services.length > 0 && <ServiceMarquee items={services.map((s) => s.title)} />}
-
-      {/* ----------------------------------------------------------- About */}
-      <section className="py-20 sm:py-28" aria-labelledby="tentang">
-        <div className="container-page grid gap-12 lg:grid-cols-2 lg:items-center">
-          <div data-reveal="">
-            <p className="eyebrow">Tentang GROWTHEDUH</p>
-            <h2 id="tentang" className="heading-display mt-3 text-3xl leading-tight sm:text-4xl">
-              Ruang yang hangat untuk bertumbuh dan memahami diri.
-            </h2>
-            {settings.about_intro && (
-              <p className="mt-5 text-lg leading-relaxed text-muted">{settings.about_intro}</p>
-            )}
-            <Link href="/tentang-kami" className="btn-outline mt-8">
-              Selengkapnya tentang kami <ArrowRight size={16} aria-hidden />
-            </Link>
-          </div>
-          <div className="space-y-5" data-stagger="">
-            {settings.vision && (
-              <figure className="relative overflow-hidden rounded-3xl bg-sand-soft p-8">
-                <LeafAccent className="absolute -right-2 -bottom-3 text-sand" size={72} rotate={-30} duration={10000} />
-                <p className="text-xs font-semibold tracking-[0.18em] text-brand uppercase">Visi</p>
-                <blockquote className="relative mt-3 font-display text-2xl leading-snug text-ink">
-                  “{settings.vision}”
-                </blockquote>
-              </figure>
-            )}
-            {profile && (
-              <Link
-                href={`/tim/${profile.slug}`}
-                className="card group flex items-center gap-4 p-5 transition duration-300 hover:-translate-y-1 hover:shadow-lift"
-              >
-                <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-full bg-brand-soft">
-                  {profile.portrait_url && (
-                    <SmartImage
-                      src={profile.portrait_url}
-                      alt=""
-                      fill
-                      sizes="64px"
-                      className="object-cover object-top"
-                    />
-                  )}
-                </div>
-                <div className="min-w-0 flex-1">
-                  <p className="font-display text-lg font-medium text-ink">{profile.full_name}</p>
-                  <p className="text-sm text-muted">
-                    {profile.short_bio || profile.professional_title || "Profil profesional GROWTHEDUH"}
+            </div>
+            <div className="absolute top-[18%] -right-1 sm:right-0">
+              <div className="anim-rise" style={css({ "--delay": "1450ms" })}>
+                <div className="anim-float rounded-2xl bg-gradient-to-br from-brand to-brand-dark px-5 py-4 text-center text-white shadow-lift" style={css({ "--dur": "9s", "--delay": "600ms" })}>
+                  <p className="font-display text-3xl leading-none">{services.length}</p>
+                  <p className="mt-1 text-[11px] leading-tight text-white/80">
+                    Layanan
+                    <br />
+                    Psikologi
                   </p>
                 </div>
-                <ArrowRight size={18} className="shrink-0 text-brand transition-transform group-hover:translate-x-1" aria-hidden />
-              </Link>
-            )}
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* -------------------------------------------------------- Services */}
-      <section className="border-y border-line bg-white py-20 sm:py-28" aria-labelledby="layanan">
+      {services.length > 0 && <ServiceMarquee items={services.map((s) => s.title)} />}
+
+      {/* ============================================================ SERVICES */}
+      <section className="py-16 sm:py-24" aria-labelledby="layanan">
         <div className="container-page">
-          <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
-            <SectionHeading
-              eyebrow="Layanan"
-              title={<span id="layanan">Layanan yang kami sediakan</span>}
-              description="Pilih layanan yang sesuai dengan kebutuhan Anda. Admin kami siap membantu menjelaskan detail setiap layanan."
-            />
-            <Link href="/layanan" className="btn-ghost shrink-0">
-              Semua layanan <ArrowRight size={16} aria-hidden />
-            </Link>
-          </div>
+          <SectionTitle eyebrow="Apa yang kami lakukan" id="layanan" title="Layanan Kami" href="/layanan" linkLabel="Semua layanan" />
           {services.length ? (
-            <div data-stagger="" className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            <div data-stagger="" className="mt-10 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
               {services.map((s) => (
                 <ServiceCard key={s.id} service={s} />
               ))}
             </div>
           ) : (
-            <EmptyState className="mt-12" title="Informasi layanan segera hadir" />
+            <EmptyState className="mt-10" title="Informasi layanan segera hadir" />
           )}
         </div>
       </section>
 
-      {/* ------------------------------------------------------ Why choose */}
-      <section className="py-20 sm:py-28" aria-labelledby="mengapa">
-        <div className="container-page">
-          <SectionHeading
-            align="center"
-            eyebrow="Mengapa GROWTHEDUH"
-            title={<span id="mengapa">Bertumbuh dengan pendampingan yang tepat</span>}
-          />
-          <ul data-stagger="" className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
-            {APPROACH.map(({ icon: Icon, title, text }) => (
-              <li
-                key={title}
-                className="card group p-6 transition duration-300 hover:-translate-y-1.5 hover:border-brand/25 hover:shadow-lift"
-              >
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-soft text-brand transition duration-300 group-hover:scale-110 group-hover:bg-brand group-hover:text-white">
-                  <Icon size={22} aria-hidden strokeWidth={1.75} />
-                </div>
-                <h3 className="mt-4 font-semibold text-ink">{title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted">{text}</p>
-              </li>
-            ))}
-          </ul>
+      {/* ===================================================== ABOUT / WHY US */}
+      <section className="pb-16 sm:pb-24" aria-labelledby="tentang">
+        <div className="container-page grid gap-6 lg:grid-cols-12">
+          <div data-reveal="" className="card relative overflow-hidden p-8 lg:col-span-5">
+            <LeafAccent className="absolute -right-3 -bottom-4 text-brand-soft" size={110} rotate={-30} duration={11000} />
+            <p className="text-xs font-semibold tracking-[0.22em] text-brand uppercase">Tentang {settings.brand_name}</p>
+            <h2 id="tentang" className="heading-display mt-2 text-3xl">
+              Ruang yang hangat untuk bertumbuh.
+            </h2>
+            {settings.about_intro && <p className="relative mt-4 leading-relaxed text-muted">{settings.about_intro}</p>}
+            {settings.vision && (
+              <blockquote className="relative mt-6 border-l-2 border-sand pl-4 font-display text-lg leading-snug text-ink">
+                “{settings.vision}”
+              </blockquote>
+            )}
+            <Link href="/tentang-kami" className="btn-outline relative mt-7">
+              Selengkapnya <ArrowRight size={16} aria-hidden />
+            </Link>
+          </div>
+          <div className="lg:col-span-7">
+            <p data-reveal="" className="text-xs font-semibold tracking-[0.22em] text-brand uppercase">
+              Mengapa {settings.brand_name}
+            </p>
+            <ul data-stagger="" className="mt-4 grid gap-4 sm:grid-cols-2">
+              {APPROACH.map(({ icon: Icon, title, text }, i) => (
+                <li
+                  key={title}
+                  className={`card group flex gap-4 p-5 transition duration-300 hover:-translate-y-1 hover:shadow-lift ${i === APPROACH.length - 1 && APPROACH.length % 2 === 1 ? "sm:col-span-2" : ""}`}
+                >
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-leaf to-brand text-white transition duration-300 group-hover:scale-110">
+                    <Icon size={20} aria-hidden strokeWidth={1.75} />
+                  </span>
+                  <span>
+                    <span className="block font-semibold text-ink">{title}</span>
+                    <span className="mt-1 block text-sm leading-relaxed text-muted">{text}</span>
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </section>
 
-      {/* ------------------------------------------------------------ Team */}
-      {team.length > 0 && (
-        <section className="border-y border-line bg-white py-20 sm:py-28" aria-labelledby="tim">
+      {/* ================================================================ TEAM */}
+      {team.length > 1 && (
+        <section className="pb-16 sm:pb-24" aria-labelledby="tim">
           <div className="container-page">
-            <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
-              <SectionHeading eyebrow="Tim Profesional" title={<span id="tim">Kenali tim kami</span>} />
-              <Link href="/tim" className="btn-ghost shrink-0">
-                Lihat semua <ArrowRight size={16} aria-hidden />
-              </Link>
-            </div>
-            <div data-stagger="" className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <SectionTitle eyebrow="Tim profesional" id="tim" title="Kenali Tim Kami" href="/tim" linkLabel="Lihat semua" />
+            <div data-stagger="" className="mt-10 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
               {team.slice(0, 3).map((m) => (
                 <TeamCard key={m.id} member={m} />
               ))}
@@ -290,28 +280,19 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* ------------------------------------------------------------ Blog */}
-      <section className="py-20 sm:py-28" aria-labelledby="artikel">
+      {/* ============================================================ ARTICLES */}
+      <section className="pb-16 sm:pb-24" aria-labelledby="artikel">
         <div className="container-page">
-          <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
-            <SectionHeading
-              eyebrow="Artikel"
-              title={<span id="artikel">Bacaan untuk bertumbuh</span>}
-              description="Artikel edukatif seputar kesehatan mental, tumbuh kembang anak, keluarga, dan pengembangan diri."
-            />
-            <Link href="/artikel" className="btn-ghost shrink-0">
-              Semua artikel <ArrowRight size={16} aria-hidden />
-            </Link>
-          </div>
+          <SectionTitle eyebrow="Bacaan untuk bertumbuh" id="artikel" title="Artikel Terbaru" href="/artikel" linkLabel="Semua artikel" />
           {articles.length ? (
-            <div data-stagger="" className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div data-stagger="" className="mt-10 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
               {articles.map((a) => (
                 <ArticleCard key={a.id} article={a} />
               ))}
             </div>
           ) : (
             <EmptyState
-              className="mt-12"
+              className="mt-10"
               icon={<BookOpen size={22} aria-hidden />}
               title="Artikel edukatif segera hadir"
               description="Tim GROWTHEDUH sedang menyiapkan artikel yang bermanfaat untuk Anda."
@@ -320,36 +301,43 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ---------------------------------------------------- Testimonials */}
-      <section className="border-y border-line bg-white py-20 sm:py-28" aria-labelledby="ulasan">
+      {/* ========================================================== HIGHLIGHTS */}
+      <section className="pb-16 sm:pb-24">
         <div className="container-page">
-          <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
-            <SectionHeading eyebrow="Ulasan" title={<span id="ulasan">Cerita dari mereka</span>} />
+          <HighlightsBand items={highlights} />
+        </div>
+      </section>
+
+      {/* ======================================================== TESTIMONIALS */}
+      <section className="pb-16 sm:pb-24" aria-labelledby="ulasan">
+        <div className="container-page">
+          <div data-reveal="" className="text-center">
+            <p className="text-xs font-semibold tracking-[0.22em] text-brand uppercase">Ulasan</p>
+            <h2 id="ulasan" className="heading-display mt-2 text-3xl sm:text-4xl">
+              Apa Kata Mereka
+            </h2>
             {stats.count > 0 && (
-              <div className="flex items-center gap-3">
-                <span className="font-display text-4xl text-ink">{stats.average.toFixed(1)}</span>
-                <div>
-                  <StarRating value={stats.average} />
-                  <p className="text-xs text-muted">dari {stats.count} ulasan</p>
-                </div>
-              </div>
+              <p className="mt-3 inline-flex items-center gap-2 text-sm text-muted">
+                <StarRating value={stats.average} /> {stats.average.toFixed(1)} dari {stats.count} ulasan
+              </p>
             )}
           </div>
-          {testimonials.length ? (
-            <div data-stagger="" className="mt-12 grid gap-6 md:grid-cols-3">
-              {testimonials.map((t) => (
-                <TestimonialCard key={t.id} testimonial={t} />
-              ))}
-            </div>
-          ) : (
-            <EmptyState
-              className="mt-12"
-              icon={<MessageSquareQuote size={22} aria-hidden />}
-              title="Belum ada ulasan yang dipublikasikan"
-              description="Ulasan ditampilkan setelah ditinjau oleh tim GROWTHEDUH."
-            />
-          )}
-          <div className="mt-10 flex flex-wrap justify-center gap-3">
+          <div className="mt-10">
+            {testimonials.length ? (
+              <Carousel label="Ulasan klien">
+                {testimonials.map((t) => (
+                  <TestimonialCard key={t.id} testimonial={t} />
+                ))}
+              </Carousel>
+            ) : (
+              <EmptyState
+                icon={<MessageSquareQuote size={22} aria-hidden />}
+                title="Belum ada ulasan yang dipublikasikan"
+                description="Ulasan ditampilkan setelah ditinjau oleh tim GROWTHEDUH."
+              />
+            )}
+          </div>
+          <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Link href="/ulasan#tulis-ulasan" className="btn-primary">
               <PenLine size={16} aria-hidden /> Tulis Ulasan
             </Link>
@@ -362,16 +350,16 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ------------------------------------------------------------- FAQ */}
+      {/* ================================================================= FAQ */}
       {faqs.length > 0 && (
-        <section className="py-20 sm:py-28" aria-labelledby="faq">
-          <div className="container-page grid gap-12 lg:grid-cols-12">
-            <div className="lg:col-span-4">
-              <SectionHeading
-                eyebrow="FAQ"
-                title={<span id="faq">Pertanyaan yang sering diajukan</span>}
-                description="Belum menemukan jawaban? Hubungi admin kami melalui WhatsApp."
-              />
+        <section className="pb-16 sm:pb-24" aria-labelledby="faq">
+          <div className="container-page grid gap-10 lg:grid-cols-12">
+            <div data-reveal="" className="lg:col-span-4">
+              <p className="text-xs font-semibold tracking-[0.22em] text-brand uppercase">FAQ</p>
+              <h2 id="faq" className="heading-display mt-2 text-3xl">
+                Pertanyaan yang sering diajukan
+              </h2>
+              <p className="mt-3 text-muted">Belum menemukan jawaban? Kirim pesan kepada kami di bawah ini.</p>
             </div>
             <div className="lg:col-span-8">
               <FaqList faqs={faqs} />
@@ -380,24 +368,44 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* --------------------------------------------------------- Contact */}
-      <section className="pb-20 sm:pb-28" aria-labelledby="kontak">
-        <div className="container-page space-y-10">
-          <ContactCta settings={settings} />
-          <div>
-            <h2 id="kontak" className="sr-only">
-              Kontak
-            </h2>
-            <ContactDetails settings={settings} />
-          </div>
+      {/* ============================================================= CONTACT */}
+      <section className="pb-16 sm:pb-24" aria-labelledby="kontak">
+        <div className="container-page space-y-8">
+          <ContactPanel settings={settings} services={services.map((s) => s.title)} />
           <EmergencyNotice text={settings.emergency_info} />
-          {!waUrl && process.env.NODE_ENV !== "production" && (
-            <p className="text-center text-xs text-danger">
-              [Dev] Nomor WhatsApp belum dikonfigurasi atau tidak valid.
-            </p>
-          )}
         </div>
       </section>
     </>
+  );
+}
+
+function SectionTitle({
+  eyebrow,
+  title,
+  id,
+  href,
+  linkLabel,
+}: {
+  eyebrow: string;
+  title: string;
+  id: string;
+  href: string;
+  linkLabel: string;
+}) {
+  return (
+    <div data-reveal="" className="flex flex-wrap items-end justify-between gap-4">
+      <div>
+        <p className="text-xs font-semibold tracking-[0.22em] text-brand uppercase">{eyebrow}</p>
+        <h2 id={id} className="heading-display mt-2 text-3xl sm:text-4xl">
+          {title}
+        </h2>
+      </div>
+      <Link
+        href={href}
+        className="group inline-flex items-center gap-2 rounded-full border border-line bg-white px-4 py-2 text-sm font-semibold text-ink shadow-soft transition hover:border-brand hover:text-brand"
+      >
+        {linkLabel} <ArrowRight size={15} aria-hidden className="transition-transform group-hover:translate-x-0.5" />
+      </Link>
+    </div>
   );
 }

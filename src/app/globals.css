@@ -372,3 +372,15 @@ html[data-scrolled] .site-header {
 @utility prose-growth {
   @apply prose prose-lg max-w-none prose-headings:font-display prose-headings:font-medium prose-headings:text-ink prose-p:text-ink/85 prose-a:text-brand prose-a:underline-offset-4 prose-strong:text-ink prose-blockquote:border-l-sand prose-blockquote:font-normal prose-blockquote:text-ink/80 prose-li:marker:text-brand prose-img:rounded-2xl;
 }
+
+/* Slow orbit ring around the hero portrait. */
+@keyframes spin-slow {
+  to {
+    rotate: 360deg;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .orbit {
+    animation: spin-slow 80s linear infinite;
+  }
+}
